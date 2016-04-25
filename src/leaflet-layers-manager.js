@@ -5,10 +5,10 @@ L.Control.LeafletLayerManager = L.Control.extend({
 	 */
 	_map: null,
 
-	/** 
+	/**
 	 *
 	 */
-	_layers: {},
+	_path: [],
 
 	/**
 	 *
@@ -95,9 +95,12 @@ L.Control.LeafletLayerManager = L.Control.extend({
 
 		try {
 
-			this._treeBuilder(layers, this.options.layers);
+			this._treeBuilder(layers, {
+				name: 'Camadas',
+				children: this.options.layers
+			});
 
-			console.log(this.options.layers);
+			//setTimeout(this._applyColorPicker, 1000);
 
 		} catch (error) {
 
@@ -129,35 +132,51 @@ L.Control.LeafletLayerManager = L.Control.extend({
 	/**
 	 *
 	 */
-	_treeBuilder: function (container, layers) {
+	_treeBuilder: function (container, branch) {
 
-		for (var index in layers) {
+		if (branch instanceof Array) {
 
-			var node = layers[index];
+			for (var index in branch) {
 
-			if (this._isFolder(node)) {
+				var node = branch[index];
 
-				if (!this._hasFolderRequirements(node)) {
+				if (this._isFolder(node)) {
 
-					throw new Error('[LLM] :: Tree node does not matches a folder requirement -> ' + JSON.stringify(node).substr(0, 30) + '...');
+					if (!this._hasFolderRequirements(node)) {
+
+						throw new Error('[LLM] :: Tree node does not matches a folder requirement -> ' + JSON.stringify(node).substr(0, 30) + '...');
+
+					}
+
+					this._path.push(index);
+
+					this._treeBuilder(this._folderRenderer(container, node), node.children);
+
+				} else {
+
+					if (!this._hasLayerRequirements(node)) {
+
+						throw new Error('[LLM] :: Tree node does not matches a layer requirement -> ' + JSON.stringify(node).substr(0, 30) + '...');
+
+					}
+
+					this._path.push(index);
+
+					node.path = this._path.slice(0).join(',');
+
+					this._path.pop();
+
+					this._layerRenderer(container, node);
 
 				}
-
-				var newContainer = this._folderRenderer(container, node);
-
-				this._treeBuilder(newContainer, node.children);
-
-			} else {
-
-				if (!this._hasLayerRequirements(node)) {
-
-					throw new Error('[LLM] :: Tree node does not matches a layer requirement -> ' + JSON.stringify(node).substr(0, 30) + '...');
-
-				}
-
-				this._layerRenderer(container, node);
 
 			}
+
+			this._path.pop();
+
+		} else {
+
+			this._treeBuilder(this._folderRenderer(container, branch), branch.children);
 
 		}
 
@@ -235,9 +254,9 @@ L.Control.LeafletLayerManager = L.Control.extend({
 	 */
 	_layerRenderer: function (container, node) {
 
-		node.id = this._id();
+		//node.id = this._id();
 
-		this._loadGeoJSON(node.id, node);
+		this._loadGeoJSON(node);
 
 		// Wrapper ---
 		var wrapper = L.DomUtil.create('div', this._classBuilder('layer-wrapper'), container);
@@ -247,26 +266,33 @@ L.Control.LeafletLayerManager = L.Control.extend({
 
 		color.style.backgroundColor = this._hex2rgba(node.color, node.opacity);
 		color.style.border = '1px solid ' + node.color;
-		/*color.style.borderRadius = '2px';
-		color.style.display = 'inline-block';
-		color.style.width = '10px';
-		color.style.height = '10px';
-		color.style.margin = '-1px 4px 0px 0px';
-		color.style.verticalAlign = 'middle';*/
 
-		/*var g = new jscolor(color, {
-			value: node.color.substr(1,6),
-			valueElement: null
-		});*/
+		color.setAttribute('data-path', node.path);
 
-		//color.setAttribute('data-color', node.color);
+		color.jscolor = new jscolor(color, {
+			valueElement: null,
+			value: node.color,
+			hash: true,
+			closable: true,
+			closeText: 'X',
+			bind: this,
+			onFineChange: function () {
+				this.bind._onColorChange.call(this.bind, this.targetElement, this.toHEXString());
+			}
+		});
+
+		L.DomEvent.on(color, 'click', function (event) {
+
+			event.target.jscolor.show();
+
+		}, this);
 
 		// Checkbox ---
 		var checkbox = L.DomUtil.create('input', this._classBuilder('layer-checkbox'), wrapper);
 
 		checkbox.setAttribute('type', 'checkbox');
 		checkbox.setAttribute('title', node.name);
-		checkbox.setAttribute('value', node.id);
+		checkbox.setAttribute('value', node.path);
 
 		if (node.included === true) {
 
@@ -276,13 +302,15 @@ L.Control.LeafletLayerManager = L.Control.extend({
 
 		L.DomEvent.on(checkbox, 'change', function (event) {
 
+			var layer = this._getLayer(event.target.value);
+
 			if (event.target.checked === false) {
 
-				this._map.removeLayer(this._layers[event.target.value]);
+				this._map.removeLayer(layer);
 
 			} else {
 
-				this._layers[event.target.value].addTo(this._map);
+				layer.addTo(this._map);
 
 			}
 
@@ -304,40 +332,46 @@ L.Control.LeafletLayerManager = L.Control.extend({
 		slider.setAttribute('max', 1.0);
 		slider.setAttribute('step', 0.05);
 		slider.setAttribute('value', node.opacity);
-		slider.setAttribute('data-ref', node.id);
+		slider.setAttribute('data-path', node.path);
 
 		L.DomEvent.addListener(slider, 'input', function (event) {
 
+			var layer = this._getLayer(event.target.dataset.path, true);
+
 			var value = event.target.value;
 
-			this._layers[event.target.dataset.ref].setStyle({
+			layer.leafletLayer.setStyle({
 				fillOpacity: value,
 				opacity: value
 			});
 
-			this._layers[event.target.dataset.ref].options.fillOpacity = value;
-			this._layers[event.target.dataset.ref].options.opacity = value;
+			layer.fillOpacity = value;
+			layer.opacity = value;
 
 		}, this);
 
 		// Order ---
 		var zIndexDown = L.DomUtil.create('span', this._classBuilder('layer-zindex-action'), wrapper);
+
 		zIndexDown.innerHTML = '&#9660;';
-		zIndexDown.setAttribute('data-ref', node.id);
+
+		zIndexDown.setAttribute('data-path', node.path);
 
 		L.DomEvent.on(zIndexDown, 'click', function (event) {
 
-			this._layers[event.target.dataset.ref].bringToBack();
+			this._getLayer(event.target.dataset.path).bringToBack();
 
 		}.bind(this));
 
 		var zIndexUp = L.DomUtil.create('span', this._classBuilder('layer-zindex-action'), wrapper);
+
 		zIndexUp.innerHTML = '&#9650;';
-		zIndexUp.setAttribute('data-ref', node.id);
+
+		zIndexUp.setAttribute('data-path', node.path);
 
 		L.DomEvent.on(zIndexUp, 'click', function (event) {
 
-			this._layers[event.target.dataset.ref].bringToFront();
+			this._getLayer(event.target.dataset.path).bringToFront();
 
 		}.bind(this));
 
@@ -424,15 +458,13 @@ L.Control.LeafletLayerManager = L.Control.extend({
 	/**
 	 *
 	 */
-	_loadGeoJSON: function (id, node) {
-
-		this._layers[id] = null;
+	_loadGeoJSON: function (node) {
 
 		if (L.GeoJSON.AJAX) {
 
-			this._layers[id] = node.leafletLayer = new L.GeoJSON.AJAX(node.url);
+			node.leafletLayer = new L.GeoJSON.AJAX(node.url);
 
-			this._layers[id].on('data:loaded', function (event) {
+			node.leafletLayer.on('data:loaded', function (event) {
 
 				node.loaded = true;
 
@@ -455,7 +487,7 @@ L.Control.LeafletLayerManager = L.Control.extend({
 
 			if (node.included === true) {
 
-				this._layers[id].addTo(this._map);
+				node.leafletLayer.addTo(this._map);
 
 			}
 
@@ -507,6 +539,54 @@ L.Control.LeafletLayerManager = L.Control.extend({
 			node.url.length > 0 &&
 			node.url.match(/^https?/) !== null
 
+	},
+
+	/**
+	 *
+	 */
+	_getLayer: function (path, returnConfiguration) {
+
+		if (!path) {
+
+			return null;
+
+		}
+
+		var parts = path.split(',');
+
+		var reference = this.options.layers[parts.splice(0, 1)];
+
+		var layer = null;
+
+		for (var index in parts) {
+
+			layer = reference.children[parts[index]];
+
+		}
+
+		return (returnConfiguration === true) ? layer : layer.leafletLayer;
+
+	},
+
+	/**
+	 *
+	 */
+	_onColorChange: function (target, color) {
+
+		var layer = this._getLayer(target.dataset.path, true);
+
+		target.style.backgroundColor = this._hex2rgba(color, layer.opacity);
+		target.style.border = '1px solid ' + color;
+
+		layer.leafletLayer.setStyle({
+			color: color,
+			fillColor: color
+		});
+
+		layer.color = color;
+		layer.fillColor = color;
+
 	}
+
 
 });
