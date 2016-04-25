@@ -1,0 +1,31 @@
+{
+	"name": "leaflet-layer-manager",
+	"version": "0.0.1",
+	"description": "GeoJSON layers manager, tree hierarquized, with color, opacity and include controls, beyond color classification by feature properties.",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"web": "where /q python && python -m SimpleHTTPServer 7000 || echo \"Please... install Python on your machine and set its directory to path.\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lord22shark/leaflet-layer-manager.git"
+	},
+	"keywords": [
+		"Leaflet",
+		"Plugin",
+		"Layers",
+		"Manager",
+		"Classification"
+	],
+	"author": "Jaime Daniel Corrêa Mendes",
+	"license": "MIT",
+	"dependencies": {
+		"leaflet": "0.7.7",
+		"leaflet-ajax": "2.0.0"
+	},
+	"bugs": {
+		"url": "https://github.com/lord22shark/leaflet-layer-manager/issues"
+	},
+	"homepage": "https://github.com/lord22shark/leaflet-layer-manager#readme"
+}

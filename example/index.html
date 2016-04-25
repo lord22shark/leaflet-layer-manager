@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html style="width: 100%; height: 100%;">
+	<head>
+
+		<meta charset="UTF-8">
+
+		<!-- leaflet -->
+		<link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css"/>
+		<script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
+		<script src="../node_modules/leaflet-ajax/dist/leaflet.ajax.js"></script>
+		<script src="../lib/jscolor/2.0.4/jscolor.js"></script>
+
+		<script src="http://maps.google.com/maps/api/js?v=3"></script>
+		<script src="http://rawgit.com/shramov/leaflet-plugins/master/layer/tile/Google.js"></script>
+		<script src="http://rawgit.com/shramov/leaflet-plugins/master/layer/tile/Bing.js"></script>
+
+		<link rel="stylesheet" href="../src/leaflet-layers-manager.css"/>
+		<script src="../src/leaflet-layers-manager.js"></script>
+
+	</head>	
+	<body style="margin: 0px; border: 0px; padding: 0px; width: 100%; height: inherit;">
+		<div id="map" style="width: 100%; height: 100%"></div>
+
+		<style>
+			.toggler {
+				width: 200px;
+				background-color: red;
+				position: absolute;
+				z-index: 10000;
+				left: 50%;
+				margin-left: -100px;
+				height: auto;
+				padding: 4px;
+				top: 4px;
+			}
+
+			.toggler:hover {
+				cursor: pointer;
+			}
+
+			.art {
+				width: 300px;
+				height: 400px;
+				background-color: yellow;
+				visibility: visible;
+				opacity: 1;
+				padding: 5px;
+				transition: width 0.8s ease-in-out, height 0.8s linear, opacity 1s ease-out, visibility 1s ease-out, transform 0.8s linear, background-color 1s ease-in;
+				transform: rotate(0deg);
+				position: absolute;
+				right: 20px;
+				top: 20px;
+				z-index: 10000;
+			}
+
+			.hide {
+				width: 0px;
+				height: 0px;
+				background-color: red;
+				visibility: hidden;
+				opacity: 0;
+				transform: rotate(100deg);
+			}
+
+		</style>
+
+		<!--<span class="toggler" onclick="toggler(event)">ToGGler</span>
+		<article id="art" class="art hide">Lorem ipsum Anim esse adipisicing cupidatat veniam sed id culpa proident ex aliqua consectetur nisi reprehenderit incididunt consequat incididunt dolore nisi tempor cillum aliquip tempor elit officia anim voluptate amet cillum enim adipisicing elit culpa ut culpa quis reprehenderit.</article>-->
+
+		<script type="text/javascript">
+
+			
+
+			/*L.folder = function (name) {
+				this.id = null;
+				this.name = name;
+				this.children = null;
+				this.order = 0;
+				this.options = {
+					'property': 'population',
+					'classes': '5',
+					'chroma': 'RdBl'
+				}
+			};
+
+			// extend L.GeoJSON
+			L.layer = function (name, color, opacity, included) {
+				this.id = null;
+				this.name = name;
+				this.color = color;
+				this.opacity = opacity;
+				this.included = included;
+				this.url = 'http://localhost:7000/geojson/PROD-Baixa.geojson'
+				this.order = 0;
+				this.options = {
+					'simplify': 0.01 // dependency
+				}
+			};*/
+
+			var tree = [
+				{
+					'name': 'Variáveis do Shozo',
+					'children': [
+						{
+							'name': 'Argila',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'RdBl'
+							},
+							'children': [
+								{
+									'name': 'Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/ARG-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/ARG-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/ARG-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						},
+						{
+							'name': 'CTC',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'RdBl'
+							},
+							'children': [
+								{
+									'name': 'Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/CTC-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/CTC-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/CTC-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						},
+						{
+							'name': 'Potássio',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'RdBl'
+							},
+							'children': [
+								{
+									'name': 'Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/K-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/K-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/K-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						},
+						{
+							'name': 'Matéria Orgânica',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'RdBl'
+							},
+							'children': [
+								{
+									'name': 'Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/MO-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/MO-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/MO-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						},
+						{
+							'name': 'Fósforo',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'RdBl'
+							},
+							'children': [
+								{
+									'name': 'Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/P-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/P-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/P-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						},
+						{
+							'name': 'Produtividade',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'RdBl'
+							},
+							'children': [
+								{
+									'name': 'Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/PROD-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/PROD-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': false,
+									'url': 'http://localhost:7000/geojson/PROD-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						},
+						{
+							'name': 'Saturação de Bases',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'RdBl'
+							},
+							'children': [
+								{
+									'name': 'Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/V-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/V-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/V-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						}
+					]
+				}
+			];
+
+			// BACKUP
+			/** var tree = [
+				{
+					'name': 'Produtividade',
+					'children': [
+						{
+							'name': 'Produtividade Nominal',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'RdBl'
+							},
+							'children': [
+								{
+									'name': 'Nominal Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/PROD-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Nominal Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/PROD-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Nominal Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/PROD-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						},
+						{
+							'name': 'Produtividade Relativista',
+							'options': {
+								'property': 'prod',
+								'classes': 5,
+								'chroma': 'Rainbow'
+							},
+							'children': [
+								{
+									'name': 'Relativista Baixa',
+									'color': '#FF0000',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/PROD-Baixa.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Relativista Média',
+									'color': '#FFD900',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/PROD-Media.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								},
+								{
+									'name': 'Relativista Alta',
+									'color': '#00D900',
+									'opacity': 0.8,
+									'included': true,
+									'url': 'http://localhost:7000/geojson/PROD-Alta.geojson',
+									'options': {
+										'simplify': 0.01
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					'name': 'Main Shape',
+					'color': '#FFA9D3',
+					'opacity': 0.5,
+					'included': true,
+					'url': 'http://localhost:7000/geojson/ARG-Alta.geojson',
+					'options': {
+						'simplify': 0.01
+					}
+				}
+			];**/
+
+			//------------------------------------------------
+
+			function toggler(event) {
+
+				var art = document.getElementById('art');
+
+				if (art.className.indexOf('hide') >= 0) {
+					art.style.display = 'block';
+					setTimeout(function () {
+						art.className = art.className.replace(/\s+hide/g, '');
+					}, 0);
+				} else {
+					art.className += ' hide';
+					setTimeout(function () {
+						art.style.display = 'none';
+					}, 1000);
+				}
+
+			}
+
+			var map = L.map("map");
+			//map.setView(new L.LatLng(-19.9179904, -43.9286394), 10);
+			map.setView(new L.LatLng(-12.509145478408, -55.6828594569326), 16);
+
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);
+
+			//L.marker([-19.9179904, -43.9286394]).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+
+			new L.Control.LeafletLayerManager({
+				layers: tree
+			}).addTo(map);
+
+		</script>
+	</body>
+</html>
