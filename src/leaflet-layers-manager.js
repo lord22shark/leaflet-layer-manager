@@ -61,7 +61,7 @@ L.Control.LeafletLayerManager = L.Control.extend({
 			throw Error("Please... provide options, dude!");
 		}
 
-		if (!options.hasOwnProperty('layers')) {
+		if ((!options.hasOwnProperty('layers')) && (!(options.layers instanceof Array)) && (options.layers.length <= 0)) {
 			throw Error("Please... at least layers! We need them!");
 		}
 

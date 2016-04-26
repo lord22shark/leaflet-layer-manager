@@ -19,85 +19,10 @@
 
 	</head>	
 	<body style="margin: 0px; border: 0px; padding: 0px; width: 100%; height: inherit;">
-		<div id="map" style="width: 100%; height: 90%"></div>
-
-		<span id="asd" class="sajdh kahkajdh k jewh" style="width: 10px; height: 10px; display: inline-block;"></span>
-
-		<style>
-			.toggler {
-				width: 200px;
-				background-color: red;
-				position: absolute;
-				z-index: 10000;
-				left: 50%;
-				margin-left: -100px;
-				height: auto;
-				padding: 4px;
-				top: 4px;
-			}
-
-			.toggler:hover {
-				cursor: pointer;
-			}
-
-			.art {
-				width: 300px;
-				height: 400px;
-				background-color: yellow;
-				visibility: visible;
-				opacity: 1;
-				padding: 5px;
-				transition: width 0.8s ease-in-out, height 0.8s linear, opacity 1s ease-out, visibility 1s ease-out, transform 0.8s linear, background-color 1s ease-in;
-				transform: rotate(0deg);
-				position: absolute;
-				right: 20px;
-				top: 20px;
-				z-index: 10000;
-			}
-
-			.hide {
-				width: 0px;
-				height: 0px;
-				background-color: red;
-				visibility: hidden;
-				opacity: 0;
-				transform: rotate(100deg);
-			}
-
-		</style>
-
-		<!--<span class="toggler" onclick="toggler(event)">ToGGler</span>
-		<article id="art" class="art hide">Lorem ipsum Anim esse adipisicing cupidatat veniam sed id culpa proident ex aliqua consectetur nisi reprehenderit incididunt consequat incididunt dolore nisi tempor cillum aliquip tempor elit officia anim voluptate amet cillum enim adipisicing elit culpa ut culpa quis reprehenderit.</article>-->
-
+		<div id="map" style="width: 100%; height: 100%"></div>
 		<script type="text/javascript">
 
-			var g = new jscolor(document.getElementById('asd'), {valueElement:null, value:'66ccff'});
-
-			/*L.folder = function (name) {
-				this.id = null;
-				this.name = name;
-				this.children = null;
-				this.order = 0;
-				this.options = {
-					'property': 'population',
-					'classes': '5',
-					'chroma': 'RdBl'
-				}
-			};
-
-			// extend L.GeoJSON
-			L.layer = function (name, color, opacity, included) {
-				this.id = null;
-				this.name = name;
-				this.color = color;
-				this.opacity = opacity;
-				this.included = included;
-				this.url = 'http://localhost:7000/geojson/PROD-Baixa.geojson'
-				this.order = 0;
-				this.options = {
-					'simplify': 0.01 // dependency
-				}
-			};*/
+			var host = window.location.host;
 
 			var tree = [
 						{
@@ -112,8 +37,8 @@
 									'name': 'Baixa',
 									'color': '#FF0000',
 									'opacity': 0.8,
-									'included': false,
-									'url': 'http://localhost:7000/geojson/ARG-Baixa.geojson',
+									'included': true,
+									'url': 'http://' + host + '/geojson/ARG-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -122,8 +47,8 @@
 									'name': 'Média',
 									'color': '#FFD900',
 									'opacity': 0.8,
-									'included': false,
-									'url': 'http://localhost:7000/geojson/ARG-Media.geojson',
+									'included': true,
+									'url': 'http://' + host + '/geojson/ARG-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -132,8 +57,8 @@
 									'name': 'Alta',
 									'color': '#00D900',
 									'opacity': 0.8,
-									'included': false,
-									'url': 'http://localhost:7000/geojson/ARG-Alta.geojson',
+									'included': true,
+									'url': 'http://' + host + '/geojson/ARG-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -153,7 +78,7 @@
 									'color': '#FF0000',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/CTC-Baixa.geojson',
+									'url': 'http://' + host + '/geojson/CTC-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -163,7 +88,7 @@
 									'color': '#FFD900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/CTC-Media.geojson',
+									'url': 'http://' + host + '/geojson/CTC-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -173,7 +98,7 @@
 									'color': '#00D900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/CTC-Alta.geojson',
+									'url': 'http://' + host + '/geojson/CTC-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -193,7 +118,7 @@
 									'color': '#FF0000',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/K-Baixa.geojson',
+									'url': 'http://' + host + '/geojson/K-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -203,7 +128,7 @@
 									'color': '#FFD900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/K-Media.geojson',
+									'url': 'http://' + host + '/geojson/K-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -213,7 +138,7 @@
 									'color': '#00D900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/K-Alta.geojson',
+									'url': 'http://' + host + '/geojson/K-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -233,7 +158,7 @@
 									'color': '#FF0000',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/MO-Baixa.geojson',
+									'url': 'http://' + host + '/geojson/MO-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -243,7 +168,7 @@
 									'color': '#FFD900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/MO-Media.geojson',
+									'url': 'http://' + host + '/geojson/MO-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -253,7 +178,7 @@
 									'color': '#00D900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/MO-Alta.geojson',
+									'url': 'http://' + host + '/geojson/MO-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -273,7 +198,7 @@
 									'color': '#FF0000',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/P-Baixa.geojson',
+									'url': 'http://' + host + '/geojson/P-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -283,7 +208,7 @@
 									'color': '#FFD900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/P-Media.geojson',
+									'url': 'http://' + host + '/geojson/P-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -293,7 +218,7 @@
 									'color': '#00D900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/P-Alta.geojson',
+									'url': 'http://' + host + '/geojson/P-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -313,7 +238,7 @@
 									'color': '#FF0000',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/PROD-Baixa.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -323,7 +248,7 @@
 									'color': '#FFD900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/PROD-Media.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -333,7 +258,7 @@
 									'color': '#00D900',
 									'opacity': 0.8,
 									'included': false,
-									'url': 'http://localhost:7000/geojson/PROD-Alta.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -352,8 +277,8 @@
 									'name': 'Baixa',
 									'color': '#FF0000',
 									'opacity': 0.8,
-									'included': true,
-									'url': 'http://localhost:7000/geojson/V-Baixa.geojson',
+									'included': false,
+									'url': 'http://' + host + '/geojson/V-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -362,8 +287,8 @@
 									'name': 'Média',
 									'color': '#FFD900',
 									'opacity': 0.8,
-									'included': true,
-									'url': 'http://localhost:7000/geojson/V-Media.geojson',
+									'included': false,
+									'url': 'http://' + host + '/geojson/V-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -372,8 +297,8 @@
 									'name': 'Alta',
 									'color': '#00D900',
 									'opacity': 0.8,
-									'included': true,
-									'url': 'http://localhost:7000/geojson/V-Alta.geojson',
+									'included': false,
+									'url': 'http://' + host + '/geojson/V-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -400,7 +325,7 @@
 									'color': '#FF0000',
 									'opacity': 0.8,
 									'included': true,
-									'url': 'http://localhost:7000/geojson/PROD-Baixa.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -410,7 +335,7 @@
 									'color': '#FFD900',
 									'opacity': 0.8,
 									'included': true,
-									'url': 'http://localhost:7000/geojson/PROD-Media.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -420,7 +345,7 @@
 									'color': '#00D900',
 									'opacity': 0.8,
 									'included': true,
-									'url': 'http://localhost:7000/geojson/PROD-Alta.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -440,7 +365,7 @@
 									'color': '#FF0000',
 									'opacity': 0.8,
 									'included': true,
-									'url': 'http://localhost:7000/geojson/PROD-Baixa.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Baixa.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -450,7 +375,7 @@
 									'color': '#FFD900',
 									'opacity': 0.8,
 									'included': true,
-									'url': 'http://localhost:7000/geojson/PROD-Media.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Media.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -460,7 +385,7 @@
 									'color': '#00D900',
 									'opacity': 0.8,
 									'included': true,
-									'url': 'http://localhost:7000/geojson/PROD-Alta.geojson',
+									'url': 'http://' + host + '/geojson/PROD-Alta.geojson',
 									'options': {
 										'simplify': 0.01
 									}
@@ -474,7 +399,7 @@
 					'color': '#FFA9D3',
 					'opacity': 0.5,
 					'included': true,
-					'url': 'http://localhost:7000/geojson/ARG-Alta.geojson',
+					'url': 'http://' + host + '/geojson/ARG-Alta.geojson',
 					'options': {
 						'simplify': 0.01
 					}
@@ -483,37 +408,21 @@
 
 			//------------------------------------------------
 
-			function toggler(event) {
-
-				var art = document.getElementById('art');
-
-				if (art.className.indexOf('hide') >= 0) {
-					art.style.display = 'block';
-					setTimeout(function () {
-						art.className = art.className.replace(/\s+hide/g, '');
-					}, 0);
-				} else {
-					art.className += ' hide';
-					setTimeout(function () {
-						art.style.display = 'none';
-					}, 1000);
-				}
-
-			}
-
 			var map = L.map("map");
-			//map.setView(new L.LatLng(-19.9179904, -43.9286394), 10);
+
 			map.setView(new L.LatLng(-12.509145478408, -55.6828594569326), 16);
 
-			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-			}).addTo(map);
-
-			//L.marker([-19.9179904, -43.9286394]).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+			map.addLayer(new L.Google('SATELLITE'));
 
 			new L.Control.LeafletLayerManager({
 				layers: tree
 			}).addTo(map);
+
+			/*L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);*/
+
+			//L.marker([-19.9179904, -43.9286394]).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
 
 		</script>
 	</body>
