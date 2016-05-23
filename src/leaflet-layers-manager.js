@@ -467,30 +467,48 @@ L.Control.LeafletLayerManager = L.Control.extend({
 	 */
 	_loadGeoJSON: function (node) {
 
-		if (L.GeoJSON.AJAX) {
+		var style = {
+			stroke: false,
+			color: node.color,
+			opacity: node.opacity,
+			fill: true,
+			fillColor: node.color,
+			fillOpacity: node.opacity,
+			lineCap: 'square',
+			lineJoin: 'miter',
+			clickable: null,
+			pointerEvents: null
+		};
 
-			node.leafletLayer = new L.GeoJSON.AJAX(node.url);
+		var type = typeof(node.url);
 
-			node.leafletLayer.on('data:loaded', function (event) {
+		if (type === 'string') {
 
-				node.loaded = true;
+			if (L.GeoJSON.AJAX) {
 
-				event.target.options = {
-					stroke: false,
-					color: node.color,
-					opacity: node.opacity,
-					fill: true,
-					fillColor: node.color,
-					fillOpacity: node.opacity,
-					lineCap: 'square',
-					lineJoin: 'miter',
-					clickable: null,
-					pointerEvents: null
-				}; 
+				node.leafletLayer = new L.GeoJSON.AJAX(node.url);
 
-				event.target.setStyle(event.target.options);
+				node.leafletLayer.on('data:loaded', function (event) {
 
-			});
+					node.loaded = true;
+
+					event.target.options = style; 
+
+					event.target.setStyle(event.target.options);
+
+				});
+
+				if (node.included === true) {
+
+					node.leafletLayer.addTo(this._map);
+
+				}
+
+			}
+
+		} else if (type === 'object') {
+
+			node.leafletLayer = L.geoJson(node.url, style);
 
 			if (node.included === true) {
 
@@ -542,9 +560,13 @@ L.Control.LeafletLayerManager = L.Control.extend({
 			node.hasOwnProperty('included') &&
 			typeof(node.included) === 'boolean' &&
 			node.hasOwnProperty('url') &&
-			typeof(node.url) === 'string' &&
-			node.url.length > 0 &&
-			node.url.match(/^https?/) !== null
+			(
+				typeof(node.url) === 'string' &&
+				node.url.length > 0 &&
+				node.url.match(/^https?/) !== null
+			) || (
+				typeof(node.url) === 'object'
+			)
 
 	},
 
