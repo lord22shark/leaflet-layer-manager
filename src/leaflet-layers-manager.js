@@ -510,6 +510,8 @@ L.Control.LeafletLayerManager = L.Control.extend({
 
 			node.leafletLayer = L.geoJson(node.url, style);
 
+			node.loaded = true;
+
 			if (node.included === true) {
 
 				node.leafletLayer.addTo(this._map);
@@ -585,15 +587,13 @@ L.Control.LeafletLayerManager = L.Control.extend({
 
 		var reference = this.options.layers[parts.splice(0, 1)];
 
-		var layer = null;
-
 		for (var index in parts) {
 
-			layer = reference.children[parts[index]];
+			reference = reference.children[parts[index]];
 
 		}
 
-		return (returnConfiguration === true) ? layer : layer.leafletLayer;
+		return (returnConfiguration === true) ? reference : reference.leafletLayer;
 
 	},
 
