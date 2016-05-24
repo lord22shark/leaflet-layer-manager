@@ -467,6 +467,8 @@ L.Control.LeafletLayerManager = L.Control.extend({
 	 */
 	_loadGeoJSON: function (node) {
 
+		//TODO: Addto AJAX too and refactor function (extern it)
+
 		var style = {
 			stroke: false,
 			color: node.color,
@@ -511,6 +513,30 @@ L.Control.LeafletLayerManager = L.Control.extend({
 			node.leafletLayer = L.geoJson(node.url, style);
 
 			node.loaded = true;
+
+			if ((node.url.hasOwnProperty('properties')) && (node.url.properties instanceof Object)) {
+
+				var lis = [];
+
+				for (var property in node.url.properties) {
+
+					var value = node.url.properties[property];
+
+					if (typeof(value) === 'string') {
+
+						lis.push('<li><b>' + property + ':</b>&nbsp;<span>' + value + '</span></li>');
+
+					} else {
+
+						lis.push('<li><b>' + property + ':</b>&nbsp;<span>' + JSON.stringify(value) + '</span></li>');
+
+					}
+
+				}
+
+				node.leafletLayer.bindPopup('<ul>' + lis.join('\n') + '</ul>');
+
+			}
 
 			if (node.included === true) {
 
