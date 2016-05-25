@@ -42,7 +42,8 @@
 	display: inline-block;
 	font-weight: bold;
 	margin: 0px 1px 0px 2px;
-	width: 80px;
+	white-space: nowrap;
+	width: 90px;
 }
 
 .llm-layer-label:hover {
