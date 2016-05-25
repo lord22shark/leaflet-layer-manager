@@ -337,29 +337,15 @@ L.Control.LeafletLayerManager = L.Control.extend({
 
 		L.DomEvent.on(label, 'click', function (event) {
 
-			if ((this.node.hasOwnProperty('properties')) && (this.node.properties instanceof Object)) {
+			var center = this.node.leafletLayer.getBounds().getCenter();
 
-				var lis = [];
+			if ((this.llm.options.hasOwnProperty('popupCallback')) && (this.llm.options.popupCallback instanceof Function)) {
 
-				for (var property in this.node.properties) {
+				this.llm.options.popupCallback(this.llm._map, center, this.node.properties);
 
-					var value = this.node.properties[property];
+			} else {
 
-					if (typeof(value) === 'string') {
-
-						lis.push('<li><b>' + property + ':</b>&nbsp;<span>' + value + '</span></li>');
-
-					} else {
-
-						lis.push('<li><b>' + property + ':</b>&nbsp;<span>' + JSON.stringify(value) + '</span></li>');
-
-					}
-
-				}
-
-				var center = this.node.leafletLayer.getBounds().getCenter();
-
-				L.popup().setLatLng(center).setContent('<ul>' + lis.join('\n') + '</ul>').openOn(this.llm._map);
+				L.popup().setLatLng(center).setContent('<b>' + this.node.name + '</b>').openOn(this.llm._map);
 
 			}
 
