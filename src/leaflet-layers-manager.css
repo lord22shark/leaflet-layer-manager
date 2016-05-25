@@ -45,6 +45,10 @@
 	width: 80px;
 }
 
+.llm-layer-label:hover {
+	cursor: pointer;
+}
+
 .llm-layer-checkbox {
 	margin: 0px 4px 0px 4px;
 	vertical-align: middle;
